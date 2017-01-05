@@ -21,8 +21,6 @@
  */
 
 #include "cpu.h"
-#include "sched.h"
-#include "thread.h"
 
 #include "periph/uart.h"
 #include "periph/gpio.h"
@@ -50,7 +48,7 @@ int uart_init(uart_t uart, uint32_t baudrate, uart_rx_cb_t rx_cb, void *arg)
 {
     /* initialize basic functionality */
     int res = init_base(uart, baudrate);
-    if (res != 0) {
+    if (res != UART_OK) {
         return res;
     }
 
@@ -60,7 +58,7 @@ int uart_init(uart_t uart, uint32_t baudrate, uart_rx_cb_t rx_cb, void *arg)
     /* configure interrupts and enable RX interrupt */
     _uart(uart)->INTENSET.reg = SERCOM_USART_INTENSET_RXC;
     NVIC_EnableIRQ(SERCOM0_IRQn + _sercom_id(_uart(uart)));
-    return 0;
+    return UART_OK;
 }
 
 static int init_base(uart_t uart, uint32_t baudrate)
@@ -69,7 +67,7 @@ static int init_base(uart_t uart, uint32_t baudrate)
     SercomUsart *dev;
 
     if ((unsigned int)uart >= UART_NUMOF) {
-        return -1;
+        return UART_NODEV;
     }
 
     /* get the devices base register */
@@ -101,7 +99,7 @@ static int init_base(uart_t uart, uint32_t baudrate)
     while (dev->SYNCBUSY.reg & SERCOM_USART_SYNCBUSY_CTRLB) {}
     /* finally, enable the device */
     dev->CTRLA.reg |= SERCOM_USART_CTRLA_ENABLE;
-    return 0;
+    return UART_OK;
 }
 
 void uart_write(uart_t uart, const uint8_t *data, size_t len)
@@ -142,9 +140,7 @@ static inline void irq_handler(int dev)
         /* clear error flag */
         uart->INTFLAG.reg = SERCOM_USART_INTFLAG_ERROR;
     }
-    if (sched_context_switch_request) {
-        thread_yield();
-    }
+    cortexm_isr_end();
 }
 
 #ifdef UART_0_ISR

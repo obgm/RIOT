@@ -36,6 +36,8 @@
 #include "net/netdev2.h"
 #include "net/gnrc.h"
 #include "net/gnrc/mac/types.h"
+#include "net/ieee802154.h"
+#include "net/gnrc/mac/mac.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -102,7 +104,33 @@ typedef struct gnrc_netdev2 {
      * @brief general information for the MAC protocol
      */
     uint16_t mac_info;
-#endif
+
+    /**
+     * @brief device's l2 address
+     */
+    uint8_t  l2_addr[IEEE802154_LONG_ADDRESS_LEN];
+
+    /**
+     * @brief device's l2 address length
+     */
+    uint8_t  l2_addr_len;
+
+#if ((GNRC_MAC_RX_QUEUE_SIZE != 0) || (GNRC_MAC_DISPATCH_BUFFER_SIZE != 0)) || defined(DOXYGEN)
+    /**
+     * @brief MAC internal object which stores reception parameters, queues, and
+     *        state machines.
+     */
+    gnrc_mac_rx_t rx;
+#endif /* ((GNRC_MAC_RX_QUEUE_SIZE != 0) || (GNRC_MAC_DISPATCH_BUFFER_SIZE != 0)) || defined(DOXYGEN) */
+
+#if ((GNRC_MAC_TX_QUEUE_SIZE != 0) || (GNRC_MAC_NEIGHBOR_COUNT != 0)) || defined(DOXYGEN)
+    /**
+     * @brief MAC internal object which stores transmission parameters, queues, and
+     *        state machines.
+     */
+    gnrc_mac_tx_t tx;
+#endif /* ((GNRC_MAC_TX_QUEUE_SIZE != 0) || (GNRC_MAC_NEIGHBOR_COUNT == 0)) || defined(DOXYGEN) */
+#endif /* MODULE_GNRC_MAC */
 } gnrc_netdev2_t;
 
 #ifdef MODULE_GNRC_MAC

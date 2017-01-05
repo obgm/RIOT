@@ -821,7 +821,7 @@ EXCLUDE_PATTERNS       = */board/*/tools/* \
                          */cpu/*/include/atmel/* \
                          */cpu/sam3/include/sam3* \
                          */cpu/sam3/include/system_sam*.h \
-                         */cpu/sam21_common/include/cmsis/* \
+                         */cpu/sam0_common/include/cmsis/* \
                          */cpu/lpc*/include/core_cm*.h \
                          */cpu/cortexm_common/include/core_cm*.h \
                          */cpu/stm32f*/include/stm32f* \
@@ -2016,7 +2016,8 @@ PREDEFINED             = DOXYGEN \
                          MODULE_GNRC_SIXLOWPAN \
                          MODULE_GNRC_SIXLOWPAN_ND_ROUTER \
                          MODULE_GNRC_SIXLOWPAN_ND_BORDER_ROUTER \
-                         MODULE_GNRC_UDP
+                         MODULE_GNRC_UDP \
+                         RIOT_FILE_RELATIVE
 
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then this

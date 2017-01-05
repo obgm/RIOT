@@ -41,6 +41,11 @@ extern "C" {
 #define CLOCK_APB1_DIV      RCC_CFGR_PPRE1_DIV1     /* APB1 clock -> 32MHz */
 /* configuration of flash access cycles */
 #define CLOCK_FLASH_LATENCY FLASH_ACR_LATENCY
+
+/* bus clocks for simplified peripheral initialization, UPDATE MANUALLY! */
+#define CLOCK_AHB           (CLOCK_CORECLOCK / 1)
+#define CLOCK_APB2          (CLOCK_CORECLOCK / 1)
+#define CLOCK_APB1          (CLOCK_CORECLOCK / 1)
 /** @} */
 
 /**
@@ -55,12 +60,17 @@ extern "C" {
  * @{
  */
 static const timer_conf_t timer_config[] = {
-    /* device, RCC bit, IRQ bit */
-    {TIM5, 3, TIM5_IRQn},
+    {
+        .dev      = TIM5,
+        .max      = 0xffffffff,
+        .rcc_mask = RCC_APB1ENR_TIM5EN,
+        .bus      = APB1,
+        .irqn     = TIM5_IRQn
+    }
 };
-/* interrupt routines */
+
 #define TIMER_0_ISR         (isr_tim5)
-/* number of defined timers */
+
 #define TIMER_NUMOF         (sizeof(timer_config) / sizeof(timer_config[0]))
 /** @} */
 
@@ -79,7 +89,7 @@ static const timer_conf_t timer_config[] = {
 
 /* UART 0 device configuration */
 #define UART_0_DEV          USART2
-#define UART_0_CLKEN()      (RCC->APB1ENR |= RCC_APB1ENR_USART2EN)
+#define UART_0_CLKEN()      (periph_clk_en(APB1, RCC_APB1ENR_USART2EN))
 #define UART_0_CLK          (CLOCK_CORECLOCK)   /* UART clock runs with 32MHz (F_CPU / 1) */
 #define UART_0_IRQ          USART2_IRQn
 #define UART_0_ISR          isr_usart2
@@ -98,12 +108,12 @@ static const timer_conf_t timer_config[] = {
 
 /* SPI 0 device configuration */
 #define SPI_0_DEV           SPI1
-#define SPI_0_CLKEN()       (RCC->APB2ENR |= RCC_APB2ENR_SPI1EN)
-#define SPI_0_CLKDIS()      (RCC->APB2ENR &= ~(RCC_APB2ENR_SPI1EN))
+#define SPI_0_CLKEN()       (periph_clk_en(APB2, RCC_APB2ENR_SPI1EN))
+#define SPI_0_CLKDIS()      (periph_clk_dis(APB2, RCC_APB2ENR_SPI1EN))
 #define SPI_0_IRQ           SPI1_IRQn
 #define SPI_0_ISR           isr_spi1
 /* SPI 0 pin configuration */
-#define SPI_0_PORT_CLKEN()  (RCC->AHBENR |= RCC_AHBENR_GPIOAEN)
+#define SPI_0_PORT_CLKEN()  (periph_clk_en(AHB, RCC_AHBENR_GPIOAEN))
 #define SPI_0_PORT          GPIOA
 #define SPI_0_PIN_SCK       5
 #define SPI_0_PIN_MOSI      7

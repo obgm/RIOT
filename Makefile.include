@@ -175,9 +175,6 @@ export TOOLCHAIN
 # will most likely not need to touch this.
 export PREFIX ?= $(if $(TARGET_ARCH),$(TARGET_ARCH)-)
 
-# Import all toolchain settings
-include $(RIOTCPU)/Makefile.include.$(TOOLCHAIN)
-
 # Add standard include directories
 INCLUDES += -I$(RIOTBASE)/core/include -I$(RIOTBASE)/drivers/include -I$(RIOTBASE)/sys/include
 INCLUDES += -I$(RIOTCPU)/$(CPU)/include
@@ -188,6 +185,9 @@ include $(RIOTBASE)/Makefile.pseudomodules
 include $(RIOTBASE)/Makefile.defaultmodules
 include $(RIOTBOARD)/$(BOARD)/Makefile.include
 include $(RIOTCPU)/$(CPU)/Makefile.include
+
+# Import all toolchain settings
+include $(RIOTCPU)/Makefile.include.$(TOOLCHAIN)
 
 # get number of interfaces straight before resolving dependencies
 GNRC_NETIF_NUMOF ?= 1
@@ -202,6 +202,15 @@ USEMODULE += $(filter-out $(DISABLE_MODULE), $(DEFAULT_MODULE))
 
 ifeq ($(strip $(MCU)),)
 	MCU = $(CPU)
+endif
+
+# set some settings useful for continuous integration builds
+ifeq ($(RIOT_CI_BUILD),1)
+    RIOT_VERSION_OVERRIDE:=buildtest
+    ifneq ($(filter $(BOARD_INSUFFICIENT_MEMORY), $(BOARD)),)
+        $(info CI-build: skipping link step)
+        RIOTNOLINK:=1
+    endif
 endif
 
 # if you want to publish the board into the sources as an uppercase #define

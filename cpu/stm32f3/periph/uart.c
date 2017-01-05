@@ -19,8 +19,6 @@
  */
 
 #include "cpu.h"
-#include "sched.h"
-#include "thread.h"
 #include "periph/uart.h"
 
 /**
@@ -34,7 +32,7 @@ int uart_init(uart_t uart, uint32_t baudrate, uart_rx_cb_t rx_cb, void *arg)
 {
     /* do basic initialization */
     int res = init_base(uart, baudrate);
-    if (res < 0) {
+    if (res != UART_OK) {
         return res;
     }
 
@@ -64,7 +62,7 @@ int uart_init(uart_t uart, uint32_t baudrate, uart_rx_cb_t rx_cb, void *arg)
 #endif
     }
 
-    return 0;
+    return UART_OK;
 }
 
 static int init_base(uart_t uart, uint32_t baudrate)
@@ -116,7 +114,7 @@ static int init_base(uart_t uart, uint32_t baudrate)
             break;
 #endif
         default:
-            return -1;
+            return UART_NODEV;
     }
 
     /* Make sure port and dev are != NULL here, i.e. that the variables are
@@ -157,7 +155,7 @@ static int init_base(uart_t uart, uint32_t baudrate)
     dev->CR2 = 0;
     dev->CR1 |= USART_CR1_UE | USART_CR1_TE | USART_CR1_RE;
 
-    return 0;
+    return UART_OK;
 }
 
 void uart_write(uart_t uart, const uint8_t *data, size_t len)
@@ -204,9 +202,7 @@ static inline void irq_handler(uint8_t uartnum, USART_TypeDef *dev)
         /* do nothing on overrun */
         dev->ICR |= USART_ICR_ORECF;
     }
-    if (sched_context_switch_request) {
-        thread_yield();
-    }
+    cortexm_isr_end();
 }
 
 #if UART_0_EN

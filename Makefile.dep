@@ -373,6 +373,10 @@ ifneq (,$(filter rtt_stdio,$(USEMODULE)))
 endif
 
 ifneq (,$(filter uart_stdio,$(USEMODULE)))
+  USEMODULE += isrpipe
+endif
+
+ifneq (,$(filter isrpipe,$(USEMODULE)))
   USEMODULE += tsrb
 endif
 
@@ -535,6 +539,7 @@ endif
 
 ifneq (,$(filter xtimer,$(USEMODULE)))
     FEATURES_REQUIRED += periph_timer
+    USEMODULE += div
 endif
 
 ifneq (,$(filter saul_reg,$(USEMODULE)))
