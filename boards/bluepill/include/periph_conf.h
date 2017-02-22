@@ -70,12 +70,14 @@ extern "C" {
 static const timer_conf_t timer_config[] = {
     {
         .dev      = TIM2,
+        .max      = 0xffffffff,
         .rcc_mask = RCC_APB1ENR_TIM2EN,
         .bus      = APB1,
         .irqn     = TIM2_IRQn
     },
     {
         .dev      = TIM3,
+        .max      = 0xffffffff,
         .rcc_mask = RCC_APB1ENR_TIM3EN,
         .bus      = APB1,
         .irqn     = TIM3_IRQn
@@ -97,7 +99,7 @@ static const uart_conf_t uart_config[] = {
         .dev     = USART2,
         .rx_pin  = GPIO_PIN(PORT_A, 3),
         .tx_pin  = GPIO_PIN(PORT_A, 2),
-        .rcc_pin = RCC_APB1ENR_USART2EN,
+        .rcc_mask = RCC_APB1ENR_USART2EN,
         .bus     = APB1,
         .irqn    = USART2_IRQn
     },
@@ -105,7 +107,7 @@ static const uart_conf_t uart_config[] = {
         .dev     = USART1,
         .rx_pin  = GPIO_PIN(PORT_A, 10),
         .tx_pin  = GPIO_PIN(PORT_A, 9),
-        .rcc_pin = RCC_APB2ENR_USART1EN,
+        .rcc_mask = RCC_APB2ENR_USART1EN,
         .bus     = APB2,
         .irqn    = USART1_IRQn
     },
@@ -113,7 +115,7 @@ static const uart_conf_t uart_config[] = {
         .dev     = USART3,
         .rx_pin  = GPIO_PIN(PORT_B, 11),
         .tx_pin  = GPIO_PIN(PORT_B, 10),
-        .rcc_pin = RCC_APB1ENR_USART3EN,
+        .rcc_mask = RCC_APB1ENR_USART3EN,
         .bus     = APB1,
         .irqn    = USART3_IRQn
     }
@@ -162,38 +164,51 @@ static const uart_conf_t uart_config[] = {
 /** @} */
 
 /**
- * @name SPI configuration
+ * @name   SPI configuration
+ *
+ * @note    The spi_divtable is auto-generated from
+ *          `cpu/stm32_common/dist/spi_divtable/spi_divtable.c`
  * @{
  */
-#define SPI_NUMOF           (2U)
-#define SPI_0_EN            1
-#define SPI_1_EN            0
-#define SPI_IRQ_PRIO        1
+static const uint8_t spi_divtable[2][5] = {
+    {       /* for APB1 @ 36000000Hz */
+        7,  /* -> 140625Hz */
+        6,  /* -> 281250Hz */
+        4,  /* -> 1125000Hz */
+        2,  /* -> 4500000Hz */
+        1   /* -> 9000000Hz */
+    },
+    {       /* for APB2 @ 72000000Hz */
+        7,  /* -> 281250Hz */
+        7,  /* -> 281250Hz */
+        5,  /* -> 1125000Hz */
+        3,  /* -> 4500000Hz */
+        2   /* -> 9000000Hz */
+    }
+};
 
-/* SPI 0 device config */
-#define SPI_0_DEV               SPI1
-#define SPI_0_CLKEN()           (RCC->APB2ENR |= RCC_APB2ENR_SPI1EN)
-#define SPI_0_CLKDIS()          (RCC->APB2ENR &= ~RCC_APB2ENR_SPI1EN)
-#define SPI_0_IRQ               SPI1_IRQn
-#define SPI_0_IRQ_HANDLER       isr_spi1
-#define SPI_0_BUS_DIV           1
+static const spi_conf_t spi_config[] = {
+    {
+        .dev      = SPI1,
+        .mosi_pin = GPIO_PIN(PORT_A, 7),
+        .miso_pin = GPIO_PIN(PORT_A, 6),
+        .sclk_pin = GPIO_PIN(PORT_A, 5),
+        .cs_pin   = GPIO_UNDEF,
+        .rccmask  = RCC_APB2ENR_SPI1EN,
+        .apbbus   = APB2
+    },
+    {
+        .dev      = SPI2,
+        .mosi_pin = GPIO_PIN(PORT_B, 15),
+        .miso_pin = GPIO_PIN(PORT_B, 14),
+        .sclk_pin = GPIO_PIN(PORT_B, 13),
+        .cs_pin   = GPIO_UNDEF,
+        .rccmask  = RCC_APB1ENR_SPI2EN,
+        .apbbus   = APB1
+    }
+};
 
-/* SPI 0 pin configuration */
-#define SPI_0_CLK_PIN           GPIO_PIN(PORT_A, 5)
-#define SPI_0_MISO_PIN          GPIO_PIN(PORT_A, 6)
-#define SPI_0_MOSI_PIN          GPIO_PIN(PORT_A, 7)
-
-/* SPI 1 device config */
-#define SPI_1_DEV               SPI2
-#define SPI_1_CLKEN()           (RCC->APB1ENR |= RCC_APB1ENR_SPI2EN)
-#define SPI_1_CLKDIS()          (RCC->APB1ENR &= ~RCC_APB1ENR_SPI2EN)
-#define SPI_1_IRQ               SPI2_IRQn
-#define SPI_1_IRQ_HANDLER       isr_spi2
-#define SPI_1_BUS_DIV           1
-/* SPI 1 pin configuration */
-#define SPI_1_CLK_PIN           GPIO_PIN(PORT_B, 13)
-#define SPI_1_MISO_PIN          GPIO_PIN(PORT_B, 14)
-#define SPI_1_MOSI_PIN          GPIO_PIN(PORT_B, 15)
+#define SPI_NUMOF           (sizeof(spi_config) / sizeof(spi_config[0]))
 /** @} */
 
 #ifdef __cplusplus
