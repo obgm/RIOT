@@ -13,7 +13,7 @@
  * @file
  * @brief           Implementation specific CPU configuration options
  *
- * @author          Hauke Petersen <hauke.peterse@fu-berlin.de>
+ * @author          Hauke Petersen <hauke.petersen@fu-berlin.de>
  */
 
 #ifndef CPU_CONF_H
@@ -46,6 +46,16 @@ extern "C" {
 #define FLASHPAGE_NUMOF         (256U)
 #elif defined(CPU_MODEL_NRF51X22XXAB)
 #define FLASHPAGE_NUMOF         (128U)
+#endif
+/** @} */
+
+/**
+ * @brief   Due to RAM restrictions, we need to limit the default GNRC packet
+ *          buffer size on these CPUs
+ * @{
+ */
+#ifndef GNRC_PKTBUF_SIZE
+#define GNRC_PKTBUF_SIZE                (2048)
 #endif
 /** @} */
 
