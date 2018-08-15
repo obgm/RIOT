@@ -88,6 +88,10 @@
 #include "net/asymcute.h"
 #endif
 
+#ifdef MODULE_SOCK_TDSEC
+#include "net/sock/tdsec.h"
+#endif
+
 #define ENABLE_DEBUG (0)
 #include "debug.h"
 
@@ -140,6 +144,10 @@ void auto_init(void)
 #ifdef MODULE_OPENTHREAD
     extern void openthread_bootstrap(void);
     openthread_bootstrap();
+#endif
+#ifdef MODULE_SOCK_TDSEC
+    DEBUG("Auto init tdsec\n");
+    tdsec_init();
 #endif
 #ifdef MODULE_GCOAP
     DEBUG("Auto init gcoap module.\n");

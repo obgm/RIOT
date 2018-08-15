@@ -136,6 +136,9 @@ endif
 ifneq (,$(filter bluetil_%,$(USEMODULE)))
   DIRS += net/ble/bluetil
 endif
+ifneq (,$(filter sock_tdsec,$(USEMODULE)))
+  DIRS += net/transport_layer/tdsec
+endif
 
 DIRS += $(dir $(wildcard $(addsuffix /Makefile, $(USEMODULE))))
 

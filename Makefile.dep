@@ -812,6 +812,10 @@ ifneq (,$(filter riotboot_slot, $(USEMODULE)))
   USEMODULE += riotboot_hdr
 endif
 
+ifneq (,$(filter sock_tdsec,$(USEMODULE)))
+  USEPKG += tinydtls
+endif
+
 # always select gpio (until explicit dependencies are sorted out)
 FEATURES_OPTIONAL += periph_gpio
 
