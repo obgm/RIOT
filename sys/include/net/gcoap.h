@@ -255,7 +255,7 @@ extern "C" {
  * @brief   Size of the buffer used to build a CoAP request or response
  */
 #ifndef GCOAP_PDU_BUF_SIZE
-#define GCOAP_PDU_BUF_SIZE      (128)
+#define GCOAP_PDU_BUF_SIZE      (256)
 #endif
 
 /**
