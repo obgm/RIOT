@@ -378,6 +378,10 @@ void auto_init(void)
     extern void auto_init_adxl345(void);
     auto_init_adxl345();
 #endif
+#ifdef MODULE_APDS99XX
+    extern void auto_init_apds99xx(void);
+    auto_init_apds99xx();
+#endif
 #ifdef MODULE_BMP180
     extern void auto_init_bmp180(void);
     auto_init_bmp180();
