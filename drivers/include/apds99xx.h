@@ -36,17 +36,17 @@
  * application has to declare used sensor by means of various
  * pseudomodules as follows:
  *
- *      ADPS9900:     USEMODULE=apds9900
- *      ADPS9901:     USEMODULE=apds9901
- *      ADPS9930:     USEMODULE=apds9930
- *      ADPS9950:     USEMODULE=apds9950
- *      ADPS9960:     USEMODULE=apds9900
+ *      APDS9900:     USEMODULE=apds9900
+ *      APDS9901:     USEMODULE=apds9901
+ *      APDS9930:     USEMODULE=apds9930
+ *      APDS9950:     USEMODULE=apds9950
+ *      APDS9960:     USEMODULE=apds9960
  *
  * This driver provides @ref drivers_saul capabilities.
  *
  * # Measurement Cycle
  *
- * ADPS99XX sensor **measurement cycles** consists of the
+ * APDS99XX sensor **measurement cycles** consists of the
  * following **three steps** in the given order:
  *
  * - **Proximity Sensing**
@@ -56,13 +56,13 @@
  *   time required for proximity sensing (```t_prx``` ) results from the
  *   time it takes to generate the IR LED pulses and to accumlate the
  *   reflected IR energy (```t_prx_acc```) as well as the time for the ADC
- *   conversion (```t_prx_acc```).
+ *   conversion (```t_prx_cnv```).
  *
  *      t_prx = t_prx_acc + t_prx_cnv
  *
  *   The time to generate the IR LED pulses and accumulate reflected IR
  *   energy ```t_prx_acc``` is defined by the number of pulses (parameter
- *   apds99xx_params_t::prx_pulses) and the period of one pulse ```t_pulse```.
+ *   apds99xx_params_t::prx_pulses) and the period of one pulse ```t_prx_pulse```.
  *
  *       t_prx_acc = prx_pulses * t_prx_pulse
  *
@@ -355,7 +355,7 @@ typedef struct {
  * interrupts are enable.
  *
  * The persistence values apds99xx_int_config_t::als_pers and
- * apds99xx_int_config_t::prx_pers specify how many ALS or proximaty
+ * apds99xx_int_config_t::prx_pers specify how many ALS or proximity
  * values have to be outside of the thresholds defined by
  * apds99xx_int_config_t::als_thresh_low and
  * apds99xx_int_config_t::als_thresh_high or
@@ -488,7 +488,7 @@ int apds99xx_data_ready_als(const apds99xx_t *dev);
  * Function #apds99xx_data_ready_als could be used to check whether new data
  * are available before this function is called.
  *
- * @param[in]   dev     device descriptor of APDS99XX sensor to be initialized
+ * @param[in]   dev     device descriptor of APDS99XX sensor
  * @param[out]  raw     raw ambient light sensing data as count value
  *
  * @retval  APDS99XX_OK         on success
@@ -509,7 +509,7 @@ int apds99xx_read_als_raw(const apds99xx_t *dev, uint16_t *raw);
  *
  * @note This function is only available for APDS9900, APDS9901 and APD9930.
  *
- * @param[in]   dev     device descriptor of APDS99XX sensor to be initialized
+ * @param[in]   dev     device descriptor of APDS99XX sensor
  * @param[out]  lux     illuminance in lux
  *
  * @retval  APDS99XX_OK         on success
@@ -542,7 +542,7 @@ int apds99xx_read_illuminance(const apds99xx_t *dev, uint16_t *lux);
  *
  * @note This function is only available for APDS9950 and APD9960.
  *
- * @param[in]   dev     device descriptor of APDS99XX sensor to be initialized
+ * @param[in]   dev     device descriptor of APDS99XX sensor
  * @param[out]  rgb     RGB color data sample as count values
  *
  * @retval  APDS99XX_OK         on success
@@ -585,7 +585,7 @@ int apds99xx_data_ready_prx(const apds99xx_t *dev);
  * minimum value ever measured and subtracting it from the current reading.
  * The minimum value is then assumed to be 0 (no proximity).
  *
- * @param[in]   dev     device descriptor of APDS99XX sensor to be initialized
+ * @param[in]   dev     device descriptor of APDS99XX sensor
  * @param[out]  prx     proximity sensing data as count value
  *
  * @retval  APDS99XX_OK      on success
@@ -601,26 +601,26 @@ int apds99xx_read_prx_raw(const apds99xx_t *dev, uint16_t *prx);
  * interface. Depending on the sensor used, it consumes only about 1 to 3 uA
  * in this mode.
  *
- * @param[in]   dev     device descriptor of APDS99XX sensor to be initialized
+ * @param[in]   dev     device descriptor of APDS99XX sensor
  *
  * @retval  APDS99XX_OK      on success
  * @retval  APDS99XX_ERROR_* a negative error code on error,
  *                           see #apds99xx_error_codes_t
  */
-int apds99xx_power_down(apds99xx_t *dev);
+int apds99xx_power_down(const apds99xx_t *dev);
 
 /**
  * @brief   Power up the sensor
  *
  * The sensor is woken up from sleep mode.
  *
- * @param[in]   dev     device descriptor of APDS99XX sensor to be initialized
+ * @param[in]   dev     device descriptor of APDS99XX sensor
  *
  * @retval  APDS99XX_OK      on success
  * @retval  APDS99XX_ERROR_* a negative error code on error,
  *                           see #apds99xx_error_codes_t
  */
-int apds99xx_power_up(apds99xx_t *dev);
+int apds99xx_power_up(const apds99xx_t *dev);
 
 #if MODULE_APDS99XX_FULL || DOXYGEN
 
