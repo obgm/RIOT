@@ -106,6 +106,14 @@ PSEUDOMODULES += cc1100
 PSEUDOMODULES += cc1100e
 PSEUDOMODULES += cc1101
 
+# include variants of APDS99XX drivers as pseudo modules
+PSEUDOMODULES += apds9900
+PSEUDOMODULES += apds9901
+PSEUDOMODULES += apds9930
+PSEUDOMODULES += apds9950
+PSEUDOMODULES += apds9960
+PSEUDOMODULES += apds99xx_full
+
 # include variants of SX127X drivers as pseudo modules
 PSEUDOMODULES += sx1272
 PSEUDOMODULES += sx1276
