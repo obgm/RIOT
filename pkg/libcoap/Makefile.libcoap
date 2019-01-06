@@ -1,0 +1,7 @@
+MODULE := libcoap
+
+SRC := address.c async.c block.c coap_event.c coap_hashkey.c coap_io.c \
+  coap_notls.c coap_session.c coap_time.c coap_tinydtls.c debug.c \
+  encode.c mem.c net.c option.c pdu.c resource.c str.c subscribe.c uri.c
+
+include $(RIOTBASE)/Makefile.base
