@@ -1,0 +1,7 @@
+MODULE = dcaf
+
+SRC := aif.c cose.c dcaf.c dcaf_cbor.c dcaf_coap.c dcaf_crypto_tinydtls.c \
+   dcaf_debug.c dcaf_key.c dcaf_mem.c dcaf_optlist.c dcaf_prng.c \
+   dcaf_transaction.c platform/riot/dcaf_address.c
+
+include $(RIOTBASE)/Makefile.base

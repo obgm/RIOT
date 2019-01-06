@@ -1,0 +1,44 @@
+From 9ec42a21d629af6a977ff9597245834268c8c1e9 Mon Sep 17 00:00:00 2001
+From: Olaf Bergmann <bergmann@tzi.org>
+Date: Sun, 6 Jan 2019 17:51:09 +0100
+Subject: [PATCH] Add hard-wired libdcaf.h
+
+---
+ include/dcaf/libdcaf.h | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+ create mode 100644 include/dcaf/libdcaf.h
+
+diff --git a/include/dcaf/libdcaf.h b/include/dcaf/libdcaf.h
+new file mode 100644
+index 0000000..8069929
+--- /dev/null
++++ b/include/dcaf/libdcaf.h
+@@ -0,0 +1,25 @@
++/*
++ * libdcaf.h -- internal symbols for libdcaf
++ *
++ * Copyright (C) 2019 Olaf Bergmann <bergmann@tzi.org>
++ */
++
++#ifndef _LIBDCAF_H_
++#define _LIBDCAF_H_
++
++/* Define the address where bug reports for libdcaf should be sent. */
++#define LIBDCAF_PACKAGE_BUGREPORT ""
++
++/* Define the full name of libdcaf. */
++#define LIBDCAF_PACKAGE_NAME "dcaf"
++
++/* Define the full name and version of libdcaf. */
++#define LIBDCAF_PACKAGE_STRING "dcaf 0.1.0"
++
++/* Define the home page for libdcaf. */
++#define LIBDCAF_PACKAGE_URL ""
++
++/* Define the version of libdcaf this file belongs to. */
++#define LIBDCAF_PACKAGE_VERSION "0.1.0"
++
++#endif /* _LIBDCAF_H_ */
+-- 
+2.20.1
+

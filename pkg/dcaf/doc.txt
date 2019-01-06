@@ -1,0 +1,7 @@
+/**
+ * @defgroup pkg_dcaf  Delegated CoAP Authentication and Authorization Framework
+ * @ingroup  pkg
+ * @ingroup  net
+ * @brief    Provides an implementation of the DCAF protocol
+ * @see      https://gitlab.informatik.uni-bremen.de/DCAF/dcaf.git
+ */

@@ -1,0 +1,7 @@
+#PKG_BUILDDIR ?= $(PKGDIRBASE)/dcaf/src
+
+INCLUDES += -I$(PKGDIRBASE)/dcaf/include
+
+#ifeq ($(TOOLCHAIN), llvm)
+#  CFLAGS += -Wno-gnu-zero-variadic-macro-arguments -Wno-unused-function
+#endif
