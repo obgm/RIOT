@@ -110,6 +110,12 @@ void auto_init(void)
         extern void gcoap_init(void);
         gcoap_init();
     }
+    if (IS_USED(MODULE_LIBCOAP) &&
+        !IS_ACTIVE(CONFIG_LIBCOAP_NO_AUTO_INIT)) {
+        LOG_DEBUG("Auto init libcoap.\n");
+        extern void libcoap_init(void);
+        libcoap_init();
+    }
     if (IS_USED(MODULE_DEVFS)) {
         LOG_DEBUG("Mounting /dev.\n");
         extern void auto_init_devfs(void);
