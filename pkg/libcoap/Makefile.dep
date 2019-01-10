@@ -2,5 +2,10 @@ USEMODULE += posix_sockets
 USEMODULE += posix_headers
 USEMODULE += gnrc_sock_udp
 
+ifneq (,$(filter libcoap,$(USEPKG)))
+  USEMODULE += libcoap
+  USEMODULE += libcoap-contrib
+endif
+
 # libcoap is only supported by 32 bit architectures
 FEATURES_REQUIRED += arch_32bit
