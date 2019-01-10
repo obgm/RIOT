@@ -5,6 +5,12 @@ USEMODULE += gnrc_sock_udp
 ifneq (,$(filter libcoap,$(USEPKG)))
   USEMODULE += libcoap
   USEMODULE += libcoap-contrib
+
+  PSEUDOMODULES += libcoap_tinydtls
+endif
+
+ifneq (,$(filter libcoap_tinydtls,$(USEMODULE)))
+  USEPKG += tinydtls
 endif
 
 # libcoap is only supported by 32 bit architectures
