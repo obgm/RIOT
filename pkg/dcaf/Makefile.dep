@@ -1,4 +1,7 @@
 ifneq (,$(filter dcaf,$(USEPKG)))
-  USEMODULE += cn-cbor
-  USEMODULE += libcoap
+  USEPKG += cn-cbor
+  USEMODULE += libcoap_tinydtls
+  USEPKG += libcoap
+  USEMODULE += memarray
+  USEMODULE += dcaf
 endif

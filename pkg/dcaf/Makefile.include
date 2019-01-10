@@ -1,6 +1,8 @@
-#PKG_BUILDDIR ?= $(PKGDIRBASE)/dcaf/src
-
 INCLUDES += -I$(PKGDIRBASE)/dcaf/include
+
+ifneq (,$(filter libcoap_tinydtls,$(USEMODULE)))
+  CFLAGS += -DCOAP_DTLS_TINYDTLS
+endif
 
 #ifeq ($(TOOLCHAIN), llvm)
 #  CFLAGS += -Wno-gnu-zero-variadic-macro-arguments -Wno-unused-function
