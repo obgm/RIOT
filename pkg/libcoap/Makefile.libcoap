@@ -9,4 +9,8 @@ ifneq (,$(filter libcoap_tinydtls,$(USEMODULE)))
 CFLAGS += -DHAVE_LIBTINYDTLS
 endif
 
+ifneq (,$(filter libcoap_tinydtls,$(USEMODULE)))
+CFLAGS += -DHAVE_LIBTINYDTLS
+endif
+
 include $(RIOTBASE)/Makefile.base
