@@ -20,61 +20,45 @@
 
 #include "thread.h"
 #include "libcoap_init.h"
-#include "xtimer.h"
 #include "net/gnrc.h"
-#include "net/udp.h"
-#include "net/gnrc/netreg.h"
+
+void coap_riot_startup(void);
 
 coap_context_t *coap_context = NULL;
 kernel_pid_t coap_pid = KERNEL_PID_UNDEF;
 
 static char _msg_stack[LIBCOAP_STACK_SIZE];
-static msg_t _msg_q[LIBCOAP_MSG_QUEUE_SIZE];
-
-static void _receive_coap(gnrc_pktsnip_t *pkt) {
-    gnrc_pktsnip_t *udp;
-    udp_hdr_t *udp_hdr;
-
-    assert(pkt != NULL);
-
-    udp = gnrc_pktsnip_search_type(pkt, GNRC_NETTYPE_UDP);
-
-    if (udp) {
-        DEBUG("LIBCOAP: found UDP\n");
-        udp_hdr = (udp_hdr_t *)udp->data;
-        if (udp_hdr) {
-            udp_hdr_print(udp_hdr);
-        }
-    }
-}
 
 static void *_event_loop(void *arg)
 {
-    gnrc_netreg_entry_t me_reg = { .demux_ctx = LIBCOAP_COAP_PORT,
-                                   .target.pid = thread_getpid() };
-    msg_t msg;
+    const unsigned int default_wait_time = COAP_RESOURCE_CHECK_TIME * 1000;
+    unsigned wait_ms = default_wait_time;
     (void)arg;
 
-    msg_init_queue(_msg_q, LIBCOAP_MSG_QUEUE_SIZE);
-    gnrc_netreg_register(GNRC_NETTYPE_UDP, &me_reg);
+    coap_riot_startup();
 
     while (1) {
-        msg_receive(&msg);
-        switch (msg.type) {
-            // FIXME: handle timeout
-        case GNRC_NETAPI_MSG_TYPE_RCV:
-            _receive_coap(msg.content.ptr);
+        int result = coap_run_once(coap_context, wait_ms);
+        if (result < 0) {
             break;
-        case GNRC_NETAPI_MSG_TYPE_SND:
-            break;
-        case GNRC_NETAPI_MSG_TYPE_SET:
-            /* fall through */
-        case GNRC_NETAPI_MSG_TYPE_GET:
-            break;
-        default:
-            break;
+        } else if (result && (unsigned)result < wait_ms) {
+            /* decrement if there is a result wait time returned */
+            wait_ms -= result;
+        } else {
+            /*
+             * result == 0, or result >= wait_ms
+             * (wait_ms could have decremented to a small value, below
+             * the granularity of the timer in coap_run_once() and hence
+             * result == 0)
+             */
+        }
+        if (result) {
+            /* result must have been >= wait_ms, so reset wait_ms */
+            wait_ms = default_wait_time;
         }
     }
+
+    /* never reached */
     return NULL;
 }
 
@@ -86,20 +70,33 @@ void libcoap_init(void)
 
     coap_startup();
     coap_context = coap_new_context(NULL);
+    if (!coap_context) {
+        puts("Error creating CoAP context");
+        return;
+    }
 
+    /* TODO: create CoAP endpoints for each interface. */
+    bool ok = false;
     coap_address_t addr;
     coap_address_init(&addr);
     addr.addr.sa.sa_family = AF_INET6;
     addr.addr.sin6.sin6_addr = in6addr_any;
-    addr.addr.sin6.sin6_port = htons(COAP_DEFAULT_PORT);
+    addr.addr.sin6.sin6_port = htons(LIBCOAP_COAP_PORT);
 
-    coap_endpoint_t *ep_udp;
-    ep_udp = coap_new_endpoint(coap_context, &addr, COAP_PROTO_UDP);
-    if (!ep_udp) {
-        puts("Error creating CoAP UDP socket");
+    ok = coap_new_endpoint(coap_context, &addr, COAP_PROTO_UDP) || ok;
+
+    addr.addr.sin6.sin6_port = htons(LIBCOAP_COAPS_PORT);
+    ok = coap_new_endpoint(coap_context, &addr, COAP_PROTO_UDP) || ok;
+
+    if (!ok) {
+        puts("Error creating CoAP endpoints");
+        coap_free_context(coap_context);
+        coap_cleanup();
+        coap_context = NULL;
+        return;
     }
 
-    if (coap_context && ep_udp) {
+    if (coap_context && ok) {
         puts("CoAP context ready");
         coap_pid = thread_create(_msg_stack, sizeof(_msg_stack),
                                  THREAD_PRIORITY_MAIN - 1,

@@ -30,10 +30,6 @@ extern "C" {
                             + COAP_DEFAULT_MAX_PDU_RX_SIZE)
 #endif /* LIBCOAP_STACK_SIZE */
 
-#ifndef LIBCOAP_MSG_QUEUE_SIZE
-#define LIBCOAP_MSG_QUEUE_SIZE (32U)
-#endif /* LIBCOAP_MSG_QUEUE_SIZE */
-
 #ifndef LIBCOAP_COAP_PORT
 #define LIBCOAP_COAP_PORT (5683U)
 #endif /* LIBCOAP_COAP_PORT */
