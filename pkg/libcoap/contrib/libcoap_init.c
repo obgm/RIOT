@@ -85,8 +85,10 @@ void libcoap_init(void)
 
     ok = coap_new_endpoint(coap_context, &addr, COAP_PROTO_UDP) || ok;
 
+#ifdef MODULE_LIBCOAP_TINYDTLS
     addr.addr.sin6.sin6_port = htons(LIBCOAP_COAPS_PORT);
-    ok = coap_new_endpoint(coap_context, &addr, COAP_PROTO_UDP) || ok;
+    ok = coap_new_endpoint(coap_context, &addr, COAP_PROTO_DTLS) || ok;
+#endif /* MODULE_LIBCOAP_TINYDTLS */
 
     if (!ok) {
         puts("Error creating CoAP endpoints");
