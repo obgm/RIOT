@@ -1,9 +1,7 @@
 PKG_NAME=dcaf
 PKG_URL=git@gitlab.informatik.uni-bremen.de:DCAF/dcaf.git
-PKG_VERSION=ce5ce02507a4267e14565613c806ee593c8a3ca5
+PKG_VERSION=54d3ed5593e6b95ec94fd0f528ea349b395e2f69
 PKG_LICENSE=MIT
-
-CFLAGS += -Wno-implicit-fallthrough
 
 .PHONY: all
 
