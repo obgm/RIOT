@@ -1,5 +1,5 @@
-# name of your application
-APPLICATION = dcaf_server
+# DCAF server
+APPLICATION = dcaf_s
 
 # If no BOARD is found in the environment, use this default:
 BOARD ?= native
