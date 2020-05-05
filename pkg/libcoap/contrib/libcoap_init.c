@@ -38,7 +38,7 @@ static void *_event_loop(void *arg)
     coap_riot_startup();
 
     while (1) {
-        int result = coap_run_once(coap_context, wait_ms);
+        int result = coap_io_process(coap_context, wait_ms);
         if (result < 0) {
             break;
         } else if (result && (unsigned)result < wait_ms) {
