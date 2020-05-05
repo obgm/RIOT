@@ -3,7 +3,7 @@ MODULE := libcoap
 SRC := address.c async.c block.c coap_event.c coap_hashkey.c coap_io.c \
   coap_notls.c coap_session.c coap_tinydtls.c coap_debug.c \
   encode.c mem.c net.c option.c pdu.c resource.c str.c subscribe.c uri.c \
-  coap_io_riot.c
+  coap_io_riot.c coap_tcp.c
 
 ifneq (,$(filter libcoap_tinydtls,$(USEMODULE)))
 CFLAGS += -DHAVE_LIBTINYDTLS
